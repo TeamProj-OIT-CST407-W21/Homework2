@@ -42,6 +42,7 @@ fK x = do
 --- bound == list original size
 --- normally R shift would be length - 1 EXCEPT new list is + 1 element, + 1 - 1 negate eachother
 ---- therefore, just using list length works just fine
+---- passing in a negative number will give right circular, positive will give left circular
 circularShift :: [Int] -> Int -> [Int]
 circularShift list shift
      | shift < 0 = take (length list) (prependLast list)
