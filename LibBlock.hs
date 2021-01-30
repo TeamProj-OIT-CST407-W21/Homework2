@@ -2,24 +2,24 @@
 module LibBlock where
 
 swapIP :: [Int] -> [Int]
-swapIP x = x !! 2 : x !! 6 : x !! 3 : x !! 1 : x !! 4 : x !! 8 : x !! 5 : x !! 7 : []
+swapIP x = x !! 1 : x !! 5 : x !! 2 : x !! 0 : x !! 4 : x !! 7 : x !! 4 : x !! 6 : []
 
 swapIPINVERSE ::[Int] -> [Int]
-swapIPINVERSE x = x !! 4 : x !! 1 : x !! 3 : x !! 5 : x !! 7 : x !! 2 : x !! 8 : x !! 6 : []
+swapIPINVERSE x = x !! 3 : x !! 0 : x !! 2 : x !! 4 : x !! 6 : x !! 1 : x !! 7 : x !! 5 : []
 
 swapPTEN :: [Int] -> [Int]
-swapPTEN x = x !! 3 : x !! 5 : x !! 2 : x !! 7 : x !! 4 : x !! 10 : x !! 1 : x !! 9 : x !! 8 : x !! 6 : []
+swapPTEN x = x !! 2 : x !! 4 : x !! 1 : x !! 6 : x !! 3 : x !! 9 : x !! 0 : x !! 8 : x !! 7 : x !! 5 : []
 
 swapPEIGHT :: [Int] -> [Int]
-swapPEIGHT x = x !! 6 : x !! 3 : x !! 7 : x !! 4 : x !! 8 : x !! 5 : x !! 10 : x !! 9 : []
+swapPEIGHT x = x !! 5 : x !! 2 : x !! 8 : x !! 3 : x !! 7 : x !! 4 : x !! 9 : x !! 8 : []
 --- might get mad because it is going to have a length 10 list and return a length 8 list?
 
 swapEP :: [Int] -> [Int]
-swapEP x = x !! 4 : x !! 1 : x !! 2 : x !! 3 :x !! 2 : x !! 3 : x !! 4 : x !! 1 : []
+swapEP x = x !! 3 : x !! 0 : x !! 1 : x !! 2 :x !! 1 : x !! 2 : x !! 3 : x !! 0 : []
 ---- might also use circular shift?
 
 swapPFOUR :: [Int] -> [Int]
-swapPFOUR x = x !! 2 : x !! 4 : x !! 3 : x !! 1 : []
+swapPFOUR x = x !! 1 : x !! 3 : x !! 2 : x !! 0 : []
 
 swapFORFK :: [Int] -> [Int]
 swapFORFK x = x !! 4 : x !! 5 : x !! 6 : x !! 7 : x !! 0 : x !! 1 : x !! 2 : x !! 3 : []
