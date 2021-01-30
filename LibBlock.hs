@@ -38,3 +38,22 @@ fK x = do
    let rightHalfModified = fInner (snd xs)
    let leftHalfModified = leftHalf xor rightHalfModified
    x = leftHalfModified ++ rightHalf
+
+--- bound == list original size
+--- normally R shift would be length - 1 EXCEPT new list is + 1 element, + 1 - 1 negate eachother
+---- therefore, just using list length works just fine
+circularShift :: [Int] -> Int -> [Int]
+circularShift list shift
+-----     | shift < 0 = take ((length list) - 1)(concat [[tail list], list])
+----     | shift > 0 = drop 1 (concat [list, [head list]])
+     | shift < 0 = take (length list) (prependLast list)
+     | shift > 0 = drop 1 (appendFirst list)
+     | shift == 0 = list
+
+
+prependLast :: [Int] -> [Int]
+prependLast list = concat [[last list], list]
+
+appendFirst :: [Int] -> [Int]
+appendFirst list = concat [list, [head list]]
+
