@@ -44,8 +44,6 @@ fK x = do
 ---- therefore, just using list length works just fine
 circularShift :: [Int] -> Int -> [Int]
 circularShift list shift
------     | shift < 0 = take ((length list) - 1)(concat [[tail list], list])
-----     | shift > 0 = drop 1 (concat [list, [head list]])
      | shift < 0 = take (length list) (prependLast list)
      | shift > 0 = drop 1 (appendFirst list)
      | shift == 0 = list
