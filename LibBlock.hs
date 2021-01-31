@@ -1,5 +1,6 @@
 
 module LibBlock where
+import Data.List as L
 
 swapIP :: [Int] -> [Int]
 swapIP x = x !! 1 : x !! 5 : x !! 2 : x !! 0 : x !! 3 : x !! 7 : x !! 4 : x !! 6 : []
@@ -56,8 +57,8 @@ sONE = [[0,1,2,3],[2,0,1,3],[3,0,1,0],[2,1,0,3]]
 ---- A circular shift does not perform this operation precisely, but was the inspiration behind the neg/pos convension
 circularShift :: [Int] -> Int -> [Int]
 circularShift list shift
-     | shift < 0 = take (length list) (prependEnd list shift)
-     | shift > 0 = drop shift (appendBegin list shift)
+     | shift < 0 = L.take (L.length list) (prependEnd list shift)
+     | shift > 0 = L.drop shift (appendBegin list shift)
      | shift == 0 = list
 
 --- takes the ending elements in a list and prepends them to the beginning
@@ -67,12 +68,12 @@ circularShift list shift
 ---- of forsight, seemed like a good idea here
 prependEnd :: [Int] -> Int -> [Int]
 prependEnd list shift 
-   | (shift < 0) = concat [drop ((length list) + shift) list, list]
-   | (shift > 0) = concat [drop ((length list) - shift) list, list]
+   | (shift < 0) = L.concat [L.drop ((L.length list) + shift) list, list]
+   | (shift > 0) = L.concat [L.drop ((L.length list) - shift) list, list]
    | (shift == 0) = list
    
 
 --- takes the initial elements in a list and appends them to the end
 --- in this case, can be of any specified number of elements, as long as does not exceed list length
 appendBegin :: [Int] -> Int -> [Int]
-appendBegin list shift = concat [list, take shift list]
+appendBegin list shift = L.concat [list, L.take shift list]
