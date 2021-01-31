@@ -2,7 +2,7 @@
 module LibBlock where
 
 swapIP :: [Int] -> [Int]
-swapIP x = x !! 1 : x !! 5 : x !! 2 : x !! 0 : x !! 4 : x !! 7 : x !! 4 : x !! 6 : []
+swapIP x = x !! 1 : x !! 5 : x !! 2 : x !! 0 : x !! 3 : x !! 7 : x !! 4 : x !! 6 : []
 
 swapIPINVERSE ::[Int] -> [Int]
 swapIPINVERSE x = x !! 3 : x !! 0 : x !! 2 : x !! 4 : x !! 6 : x !! 1 : x !! 7 : x !! 5 : []
@@ -11,8 +11,7 @@ swapPTEN :: [Int] -> [Int]
 swapPTEN x = x !! 2 : x !! 4 : x !! 1 : x !! 6 : x !! 3 : x !! 9 : x !! 0 : x !! 8 : x !! 7 : x !! 5 : []
 
 swapPEIGHT :: [Int] -> [Int]
-swapPEIGHT x = x !! 5 : x !! 2 : x !! 8 : x !! 3 : x !! 7 : x !! 4 : x !! 9 : x !! 8 : []
---- might get mad because it is going to have a length 10 list and return a length 8 list?
+swapPEIGHT x = x !! 5 : x !! 2 : x !! 6 : x !! 3 : x !! 7 : x !! 4 : x !! 9 : x !! 8 : []
 
 swapEP :: [Int] -> [Int]
 swapEP x = x !! 3 : x !! 0 : x !! 1 : x !! 2 :x !! 1 : x !! 2 : x !! 3 : x !! 0 : []
@@ -21,6 +20,8 @@ swapEP x = x !! 3 : x !! 0 : x !! 1 : x !! 2 :x !! 1 : x !! 2 : x !! 3 : x !! 0 
 swapPFOUR :: [Int] -> [Int]
 swapPFOUR x = x !! 1 : x !! 3 : x !! 2 : x !! 0 : []
 
+---- Performs the function of the SW box
+---- Note, could also use splitAt and concat
 swapFORFK :: [Int] -> [Int]
 swapFORFK x = x !! 4 : x !! 5 : x !! 6 : x !! 7 : x !! 0 : x !! 1 : x !! 2 : x !! 3 : []
 
@@ -29,6 +30,10 @@ sZERO = [[1,0,3,2],[3,2,1,0],[0,2,1,3],[3,1,3,2]]
 
 sONE :: [[Int]]
 sONE = [[0,1,2,3],[2,0,1,3],[3,0,1,0],[2,1,0,3]]
+--- remember to change numbers to binary form, will become [[[Int]]]
+---    using x!!0 x!!1 to reference cells to retrieve bits from
+
+
 
 ---keyGeneration :: [Int] -> ([Int], [Int])
 ---keyGeneration x = do
