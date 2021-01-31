@@ -50,19 +50,29 @@ sONE = [[0,1,2,3],[2,0,1,3],[3,0,1,0],[2,1,0,3]]
 ---   return y
 
 --- bound == list original size
---- normally R shift would be length - 1 EXCEPT new list is + 1 element, + 1 - 1 negate eachother
----- therefore, just using list length works just fine
----- passing in a negative number will give right circular, positive will give left circular
+-- for right shift, the size of the final list will always be the same, therefore, can use the original length 
+-- list length regardless to chop off the prepended part of the list
+--- Note: with pure logical shift, left multiplies by 2 and right logical divides by 2
+---- A circular shift does not perform this operation precisely, but was the inspiration behind the neg/pos convension
 circularShift :: [Int] -> Int -> [Int]
 circularShift list shift
-     | shift < 0 = take (length list) (prependLast list)
-     | shift > 0 = drop 1 (appendFirst list)
+     | shift < 0 = take (length list) (prependEnd list shift)
+     | shift > 0 = drop shift (appendBegin list shift)
      | shift == 0 = list
 
+--- takes the ending elements in a list and prepends them to the beginning
+---- flexibility with passing in positive or negative shifts allows for flexibility with circularShfit
+---- HOWEVER will ultimately do exactly the same operation (user can then disregard sign of shift, does same thing)
+---- might be some case where being sign agnositic is a problem, in this context with this operation, within the limits
+---- of forsight, seemed like a good idea here
+prependEnd :: [Int] -> Int -> [Int]
+prependEnd list shift 
+   | (shift < 0) = concat [drop ((length list) + shift) list, list]
+   | (shift > 0) = concat [drop ((length list) - shift) list, list]
+   | (shift == 0) = list
+   
 
-prependLast :: [Int] -> [Int]
-prependLast list = concat [[last list], list]
-
-appendFirst :: [Int] -> [Int]
-appendFirst list = concat [list, [head list]]
-
+--- takes the initial elements in a list and appends them to the end
+--- in this case, can be of any specified number of elements, as long as does not exceed list length
+appendBegin :: [Int] -> Int -> [Int]
+appendBegin list shift = concat [list, take shift list]
