@@ -1,6 +1,7 @@
 
 module LibBlock where
 import Data.List as L
+import Data.Tuple as T
 
 swapIP :: [Int] -> [Int]
 swapIP x = x !! 1 : x !! 5 : x !! 2 : x !! 0 : x !! 3 : x !! 7 : x !! 4 : x !! 6 : []
@@ -34,11 +35,15 @@ sONE = [[0,1,2,3],[2,0,1,3],[3,0,1,0],[2,1,0,3]]
 --- remember to change numbers to binary form, will become [[[Int]]]
 ---    using x!!0 x!!1 to reference cells to retrieve bits from
 
-
-
 ---keyGeneration :: [Int] -> ([Int], [Int])
 ---keyGeneration x = do
 ---   let keyInitial = swapPTEN x
+
+generateKey1:: [Int] -> [Int]
+generateKey1 key = swapPEIGHT (L.concat [(circularShift (T.fst (L.splitAt 5 (swapPTEN key))) 1) , (circularShift (T.snd (L.splitAt 5 (swapPTEN key))) 1)])
+
+generateKey2:: [Int] -> [Int]
+generateKey2 key = swapPEIGHT (L.concat [(circularShift (T.fst (L.splitAt 5 (swapPTEN key))) 3) , (circularShift (T.snd (L.splitAt 5 (swapPTEN key))) 3)])
 
 ---fK :: [Int] -> [Int] -> [Int]
 ---fK x key = do
@@ -71,7 +76,7 @@ prependEnd list shift
    | (shift < 0) = L.concat [L.drop ((L.length list) + shift) list, list]
    | (shift > 0) = L.concat [L.drop ((L.length list) - shift) list, list]
    | (shift == 0) = list
-   
+
 
 --- takes the initial elements in a list and appends them to the end
 --- in this case, can be of any specified number of elements, as long as does not exceed list length
