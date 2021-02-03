@@ -82,3 +82,16 @@ prependEnd list shift
 --- in this case, can be of any specified number of elements, as long as does not exceed list length
 appendBegin :: [Int] -> Int -> [Int]
 appendBegin list shift = L.concat [list, L.take shift list]
+
+--- xor a 'bit list' of 1s and 0s formatted at [Int] 
+arrXor :: [Int] -> [Int] -> [Int]
+arrXor x y = zipWith oneBitXor x y
+
+--- xor for a single bit
+oneBitXor :: Int -> Int -> Int
+oneBitXor x y 
+    | (x == 1 && y == 1) = 0
+    | (x == 0 && y == 0) = 0
+    | (x == 0 && y == 1) = 1
+    | (x == 1 && y == 0) = 1
+    | (x < 0 || x > 1 || y < 0 || y > 1) = -1
