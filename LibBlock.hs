@@ -125,7 +125,7 @@ appendBegin list shift = L.concat [list, L.take shift list]
 
 --- xor a 'bit list' of 1s and 0s formatted at [Int] 
 arrXor :: [Int] -> [Int] -> [Int]
-arrXor x y = zipWith oneBitXor x y
+arrXor x y = L.zipWith oneBitXor x y
 
 --- xor for a single bit
 oneBitXor :: Int -> Int -> Int
