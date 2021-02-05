@@ -3,6 +3,9 @@ module LibBlock where
 import Data.List as L
 import Data.Tuple as T
 
+
+---- blocks needed for cipher
+
 swapIP :: [Int] -> [Int]
 swapIP x = x !! 1 : x !! 5 : x !! 2 : x !! 0 : x !! 3 : x !! 7 : x !! 4 : x !! 6 : []
 
@@ -27,33 +30,71 @@ swapPFOUR x = x !! 1 : x !! 3 : x !! 2 : x !! 0 : []
 swapFORFK :: [Int] -> [Int]
 swapFORFK x = x !! 4 : x !! 5 : x !! 6 : x !! 7 : x !! 0 : x !! 1 : x !! 2 : x !! 3 : []
 
-sZERO :: [[Int]]
-sZERO = [[1,0,3,2],[3,2,1,0],[0,2,1,3],[3,1,3,2]]
+---functions to actively return elements from S0 and S1 (conversion helper needed to change binary 00, 01, 10, 11 into decimal values
+---Haskell can use to access matrix elements
 
-sONE :: [[Int]]
-sONE = [[0,1,2,3],[2,0,1,3],[3,0,1,0],[2,1,0,3]]
---- remember to change numbers to binary form, will become [[[Int]]]
----    using x!!0 x!!1 to reference cells to retrieve bits from
+---returns list of 2 elements from sZERO
+fromS0 :: [Int] -> [Int]
+fromS0 list = sZERO !! (twoBitBinDec(list !! 0 : list !! 3 : [] )) !! (twoBitBinDec(list !! 1 : list !! 2 : [] )) 
 
----keyGeneration :: [Int] -> ([Int], [Int])
----keyGeneration x = do
----   let keyInitial = swapPTEN x
+---returns list of 2 elements from sONE
+fromS1 :: [Int] -> [Int]
+fromS1 list = sONE !! (twoBitBinDec(list !! 0 : list !! 3 : [] )) !! (twoBitBinDec(list !! 1 : list !! 2 : [] )) 
 
+
+----basic 4x4 matrix foundation of S-Blocks, each with a 'address'/coordinate used to access
+sZERO :: [[[Int]]]
+sZERO = [[[0,1],[0,0],[1,1],[1,0]],[[1,1],[1,0],[0,1],[0,0]],[[0,0],[1,0],[0,1],[1,1]],[[1,1],[0,1],[1,1],[1,0]]]
+
+sONE :: [[[Int]]]
+sONE = [[[0,0],[0,1],[1,0],[1,1]],[[1,0],[0,0],[0,1],[1,1]],[[1,1],[0,0],[0,1],[0,0]],[[1,0],[0,1],[0,0],[1,1]]]
+
+
+---- key generation functions
 generateKey1:: [Int] -> [Int]
 generateKey1 key = swapPEIGHT (L.concat [(circularShift (T.fst (L.splitAt 5 (swapPTEN key))) 1) , (circularShift (T.snd (L.splitAt 5 (swapPTEN key))) 1)])
 
 generateKey2:: [Int] -> [Int]
 generateKey2 key = swapPEIGHT (L.concat [(circularShift (T.fst (L.splitAt 5 (swapPTEN key))) 3) , (circularShift (T.snd (L.splitAt 5 (swapPTEN key))) 3)])
 
----fK :: [Int] -> [Int] -> [Int]
----fK x key = do
----   let xs = splitAt 4 x
----   let leftHalf = fst xs
----   let rightHalf = snd xs
----   let rightHalfModified = fInner (snd xs) key
----   let leftHalfModified = leftHalf xor rightHalfModified
----   let y = leftHalfModified ++ rightHalf
----   return y
+--- main encryption/decryption block
+---naming of keyone, keytwo based on the block diagram where naming is based on encryption
+fkComplete :: [Int] -> [Int] -> [Int] -> [Int]
+fkComplete list keyone keytwo = swapIPINVERSE (L.concat [(fkTwo list keyone keytwo), (T.snd (splitAt 4 (fkMid list keyone)))])
+
+
+---- SEQUENTIAL HELPERS FOR FKCOMPLETE
+----naming conventions kept the same
+
+--- everything except swapIPINVERSE
+fkTwo :: [Int] -> [Int] -> [Int] -> [Int]
+fkTwo list keyone keytwo = fkMidBranchFin (T.snd (splitAt 4 (fkMid list keyone))) (keytwo) (T.fst (splitAt 4 (fkMid list keyone)))
+
+---- adds in SW block + low plain nibble but without second pass through
+fkMid :: [Int] -> [Int] -> [Int]
+fkMid list keyone = swapFORFK (L.concat [(fkOne list keyone), (T.snd (splitAt 4 (swapIP list)))])
+
+
+----- despite name, will only output the first 4 high bits, needs to be concat with the proper 4 low
+fkOne :: [Int] -> [Int] -> [Int]
+fkOne list keyone = fkMidBranchFin (T.snd (splitAt 4 (swapIP list))) (keyone) (T.fst (splitAt 4 (swapIP list)))
+
+---boxh is IP (swapIP) high nibble in fk1, SW (swaoFORFK) high nibble in fk2
+---- extra layer of abstraction allows for core reuse
+fkMidBranchFin :: [Int] -> [Int] -> [Int] -> [Int]
+fkMidBranchFin list key boxh = arrXor (boxh) (swapPFOUR (fkMidBranch2 list key))
+
+---- executes block diagram up until P4
+fkMidBranch2 :: [Int] -> [Int] -> [Int]
+fkMidBranch2 list key = L.concat [fromS0(T.fst(splitAt 4 (fkMidBranch1 list key))),fromS1(T.snd(splitAt 4 (fkMidBranch1 list key)))] 
+
+--- begins the execution of the fk block, prioritized central datapath as is the most complex
+---- the rest are added in gradually as more and more of the algorithm is completed
+fkMidBranch1 :: [Int] -> [Int] -> [Int]
+fkMidBranch1 list key = arrXor (key) (swapEP list)
+
+
+---- LOGIC HELPERS AND RELATED
 
 --- bound == list original size
 -- for right shift, the size of the final list will always be the same, therefore, can use the original length 
@@ -77,7 +118,6 @@ prependEnd list shift
    | (shift > 0) = L.concat [L.drop ((L.length list) - shift) list, list]
    | (shift == 0) = list
 
-
 --- takes the initial elements in a list and appends them to the end
 --- in this case, can be of any specified number of elements, as long as does not exceed list length
 appendBegin :: [Int] -> Int -> [Int]
@@ -95,3 +135,12 @@ oneBitXor x y
     | (x == 0 && y == 1) = 1
     | (x == 1 && y == 0) = 1
     | (x < 0 || x > 1 || y < 0 || y > 1) = -1
+
+--- CONVERSION HELPERS
+
+---Data List indexes generally are left-most = first elem (unsure if architecture based or sequence based, assumed sequence based)
+--- Example : [1, 0] reprenting binary '10' where 1 has index 0 and 0 has index of 1 in Haskell Lists
+--- No relationship to mathematical 2^0, 2^1
+----- Nothing bigger than 2 bits needed for it's purpose
+twoBitBinDec :: [Int] -> Int
+twoBitBinDec x = ((x !! 0) * 2) + ((x !! 1) * 1)
