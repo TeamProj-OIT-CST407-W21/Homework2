@@ -1,4 +1,4 @@
-modlue LibUI where
+module LibUI where
 
 import Text.Read as R
 import Data.List as L
