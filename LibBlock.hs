@@ -60,7 +60,7 @@ generateKey2 key = swapPEIGHT (L.concat [(circularShift (T.fst (L.splitAt 5 (swa
 --- main encryption/decryption block
 ---naming of keyone, keytwo based on the block diagram where naming is based on encryption
 fkComplete :: [Int] -> [Int] -> [Int] -> [Int]
-fkComplete list keyone keytwo = swapIPINVERSE (L.concat [(fkTwo list keyone keytwo), (T.snd (splitAt 4 (fkMid list keyone)))])
+fkComplete list keyone keytwo = swapIPINVERSE (L.concat [(fkTwo list keyone keytwo), (T.snd (L.splitAt 4 (fkMid list keyone)))])
 
 
 ---- SEQUENTIAL HELPERS FOR FKCOMPLETE
@@ -68,16 +68,16 @@ fkComplete list keyone keytwo = swapIPINVERSE (L.concat [(fkTwo list keyone keyt
 
 --- everything except swapIPINVERSE
 fkTwo :: [Int] -> [Int] -> [Int] -> [Int]
-fkTwo list keyone keytwo = fkMidBranchFin (T.snd (splitAt 4 (fkMid list keyone))) (keytwo) (T.fst (splitAt 4 (fkMid list keyone)))
+fkTwo list keyone keytwo = fkMidBranchFin (T.snd (L.splitAt 4 (fkMid list keyone))) (keytwo) (T.fst (L.splitAt 4 (fkMid list keyone)))
 
 ---- adds in SW block + low plain nibble but without second pass through
 fkMid :: [Int] -> [Int] -> [Int]
-fkMid list keyone = swapFORFK (L.concat [(fkOne list keyone), (T.snd (splitAt 4 (swapIP list)))])
+fkMid list keyone = swapFORFK (L.concat [(fkOne list keyone), (T.snd (L.splitAt 4 (swapIP list)))])
 
 
 ----- despite name, will only output the first 4 high bits, needs to be concat with the proper 4 low
 fkOne :: [Int] -> [Int] -> [Int]
-fkOne list keyone = fkMidBranchFin (T.snd (splitAt 4 (swapIP list))) (keyone) (T.fst (splitAt 4 (swapIP list)))
+fkOne list keyone = fkMidBranchFin (T.snd (L.splitAt 4 (swapIP list))) (keyone) (T.fst (L.splitAt 4 (swapIP list)))
 
 ---boxh is IP (swapIP) high nibble in fk1, SW (swaoFORFK) high nibble in fk2
 ---- extra layer of abstraction allows for core reuse
@@ -86,7 +86,7 @@ fkMidBranchFin list key boxh = arrXor (boxh) (swapPFOUR (fkMidBranch2 list key))
 
 ---- executes block diagram up until P4
 fkMidBranch2 :: [Int] -> [Int] -> [Int]
-fkMidBranch2 list key = L.concat [fromS0(T.fst(splitAt 4 (fkMidBranch1 list key))),fromS1(T.snd(splitAt 4 (fkMidBranch1 list key)))] 
+fkMidBranch2 list key = L.concat [fromS0(T.fst(L.splitAt 4 (fkMidBranch1 list key))),fromS1(T.snd(L.splitAt 4 (fkMidBranch1 list key)))] 
 
 --- begins the execution of the fk block, prioritized central datapath as is the most complex
 ---- the rest are added in gradually as more and more of the algorithm is completed
