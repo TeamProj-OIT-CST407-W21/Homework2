@@ -48,4 +48,4 @@ main = do
                      putStrLn ("Your decrypted message is: ")
                      print (fkComplete inputFinal keyTwo keyOne)
                else
-                  die "You f**ked up"
+                  die "Invalid choice, killing program"
