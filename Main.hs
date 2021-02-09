@@ -13,7 +13,7 @@ main = do
       then E.die "Improper key length, killing program"
    else do
       if ((UI.filterLessThanZero (UI.formatInput(initialKey))) /= (L.length (UI.formatInput(initialKey))))
-         then die "Improper key, value less than zero"
+         then E.die "Improper key, value less than zero"
       else if ((UI.filterGreaterThanOne (UI.formatInput(initialKey))) /= (L.length (UI.formatInput(initialKey))))
          then E.die "Improper key, value greater than one"
       else do
